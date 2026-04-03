@@ -76,6 +76,10 @@ class _OrderPageState extends State<OrderPage> {
                 jumlahMinuman: state.jumlahMinuman,
                 totalHarga: state.totalHarga))
           );
+        } else if(state is OrderError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message), backgroundColor: Colors.redAccent,)
+          );
         }
       },
       child: MainLayout(
