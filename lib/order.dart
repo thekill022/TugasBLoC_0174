@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:statemanagement/detail_order.dart';
 import 'package:statemanagement/mainlayout.dart';
 import 'package:statemanagement/order_bloc.dart';
+import 'package:statemanagement/order_event.dart';
 import 'package:statemanagement/order_state.dart';
 
 class OrderPage extends StatefulWidget {
@@ -222,50 +223,57 @@ class _OrderPageState extends State<OrderPage> {
                     ),
                     SizedBox(height: 48),
 
-                    ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          calculateTotalPrice();
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder:
-                                  (context) => DetailOrderPage(
-                                    jumlahMakanan: jumlahMakananController.text,
-                                    jumlahMinuman: jumlahMinumanController.text,
+                    BlocBuilder<OrderBloc, OrderState>(
+                      builder: (context, state) {
+                        final isLoading = state is OrderLoading;
+                        return ElevatedButton(
+                          onPressed: isLoading? null : () {
+                            if (_formKey.currentState!.validate()) {
+                              context.read<OrderBloc>().add(
+                                OrderSubmitted(
                                     makanan: makananController.text,
                                     minuman: minumanController.text,
-                                    totalHarga: totalHarga,
-                                  ),
+                                    jumlahMinuman: int.tryParse(jumlahMakananController.text) ?? 0,
+                                    jumlahMakanan: int.tryParse(jumlahMinumanController.text) ?? 0)
+                              );
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(vertical: 18),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
                             ),
-                          );
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(vertical: 18),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        backgroundColor: MainLayout.primaryColor,
-                        foregroundColor: Colors.white,
-                        elevation: 2,
-                        shadowColor: MainLayout.primaryColor.withOpacity(0.5),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.receipt_long_rounded),
-                          SizedBox(width: 8),
-                          Text(
-                            "Place Order",
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 1.0,
-                            ),
+                            backgroundColor: MainLayout.primaryColor,
+                            foregroundColor: Colors.white,
+                            elevation: 2,
+                            shadowColor: MainLayout.primaryColor.withOpacity(0.5),
                           ),
-                        ],
-                      ),
+                          child: isLoading ?
+                              SizedBox(
+                                height: 22,
+                                width: 22,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2.5,
+                                ),
+                              )
+                              : Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.receipt_long_rounded),
+                              SizedBox(width: 8),
+                              Text(
+                                "Place Order",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 1.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
                     ),
                     SizedBox(height: 24),
                   ],
