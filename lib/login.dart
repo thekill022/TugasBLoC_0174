@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:statemanagement/auth_bloc.dart';
+import 'package:statemanagement/auth_event.dart';
 import 'package:statemanagement/auth_state.dart';
 import 'package:statemanagement/home.dart';
 import 'package:statemanagement/mainlayout.dart';
@@ -180,37 +182,49 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       SizedBox(height: 24),
       
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => HomePage(),
+                      BlocBuilder<AuthBloc, AuthState>(
+                        builder: (context, state) {
+                          final isLoading = state is AuthLoading;
+
+                          return SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: isLoading ? null : () {
+                                if (_formKey.currentState!.validate()) {
+                                  context.read<AuthBloc>().add(
+                                    LoginSubmitted(email: emailController.text, password: passwordController.text)
+                                  );
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                padding: EdgeInsets.symmetric(vertical: 18),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
                                 ),
-                              );
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            padding: EdgeInsets.symmetric(vertical: 18),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
+                                backgroundColor: MainLayout.primaryColor,
+                                foregroundColor: Colors.white,
+                                elevation: 0,
+                              ),
+                              child: isLoading ?
+                              SizedBox(
+                                width: 22,
+                                height: 22,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2.5,
+                                ),
+                              )
+                                  : Text(
+                                "Login",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 1.0,
+                                ),
+                              ),
                             ),
-                            backgroundColor: MainLayout.primaryColor,
-                            foregroundColor: Colors.white,
-                            elevation: 0,
-                          ),
-                          child: Text(
-                            "Login",
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 1.0,
-                            ),
-                          ),
-                        ),
+                          );
+                        },
                       ),
                       SizedBox(height: 24),
       
