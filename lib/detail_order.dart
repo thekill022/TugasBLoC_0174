@@ -5,8 +5,8 @@ import 'package:statemanagement/mainlayout.dart';
 class DetailOrderPage extends StatelessWidget {
   final String makanan;
   final String minuman;
-  final String jumlahMakanan;
-  final String jumlahMinuman;
+  final int jumlahMakanan;
+  final int jumlahMinuman;
   final int totalHarga;
 
   const DetailOrderPage({
