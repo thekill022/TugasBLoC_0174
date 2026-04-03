@@ -4,3 +4,7 @@ abstract class OrderEvent extends Equatable {
   @override
   List<Object?> get props => [];
 }
+
+class OrderSubmitted extends OrderEvent {
+
+}
