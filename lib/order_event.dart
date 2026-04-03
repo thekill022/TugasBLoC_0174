@@ -6,5 +6,8 @@ abstract class OrderEvent extends Equatable {
 }
 
 class OrderSubmitted extends OrderEvent {
-
+  final String makanan;
+  final String minuman;
+  final int jumlahMakanan;
+  final int jumlahMinuman;
 }
