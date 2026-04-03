@@ -29,3 +29,5 @@ class RegisterSubmitted extends AuthEvent {
   @override
   List<Object?> get props => [nama, email, password];
 }
+
+class LogoutRequested extends AuthEvent {}
